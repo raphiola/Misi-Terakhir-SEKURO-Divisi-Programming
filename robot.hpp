@@ -9,14 +9,15 @@ using namespace std;
 
 class robot
 {
-    private:
-        int health;
+    public:
+    	int health;
         int power;
         double range;
         axis position;
-
-    public:
         robot();
+        robot(char k, axis a);
+        void moverobot(axis a);
+        bool isalive();
 };
 
 #endif
