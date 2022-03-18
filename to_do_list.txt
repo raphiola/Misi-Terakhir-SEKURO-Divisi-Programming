@@ -1,6 +1,6 @@
 Untuk dikerjakan: (update tiap ada change ya !!)
-1. Indikator pointer robot
-2. Perintah serang
-3. Atribut health dan attack
-4. Loop spawn musuh baru, break saat health habis
-5. Count kill
+- Indikator pointer robot
+- Revisi atribut health dan attack
+- Rapiin initial pointer
+- Rapiin excessive code
+- Debug
