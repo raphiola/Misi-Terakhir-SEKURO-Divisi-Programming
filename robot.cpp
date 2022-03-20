@@ -3,15 +3,7 @@
 #include <windows.h>
 #include "axis.h"
 #include "robot.hpp"
-
 using namespace std;
-
-int enemyY[1];
-int enemyX[1];
-int enemyFlag[1];
-//char robot[2][2]={'*','*',
-					//'*','*'};
-int health = 100;
 
 axis make_axis (int x, int y)
 {
@@ -20,31 +12,35 @@ axis make_axis (int x, int y)
 	a.y = y;
 	return a;
 }
+
+//Pergerakan Robot
 void move_axis (axis* a, char c)
 {
 	if (c == 'w')
 	{
-		(*a).y++;
+		(*a).y++;       //Robot akan bergerak maju satu satuan ketika tombol 'w' ditekan
 	}
 	if (c == 'd')
 	{
-		(*a).x++;
+		(*a).x++;       //Robot akan bergerak ke kanan satu satuan ketika tombol 'd' ditekan
 	}
 	if (c == 's')
 	{
 		if ((*a).y != 0)
 		{
-			(*a).y--;
+			(*a).y--;   //Robot akan bergerak mundur satu satuan ketika tombol 's' ditekan
 		}
 	}
 	if (c == 'a')
 	{
 		if ((*a).x != 0)
 		{
-			(*a).x--;
+			(*a).x--;   //Robot akan bergerak ke kiri satu satuan ketika tombol 'a' ditekan
 		}
 	}
 }
+
+//
 void gotoxy(int x, int y)
 {
 	COORD coord;
@@ -53,26 +49,6 @@ void gotoxy(int x, int y)
 
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord); 
 }
-/*void genEnemy(int ind){
-	enemyX[ind] = rand();
-}
-void drawEnemy(int ind){
-	if( enemyFlag[ind] == true ){
-		gotoxy(enemyX[ind], enemyY[ind]);   cout<<"**";  
-		gotoxy(enemyX[ind], enemyY[ind]+1); cout<<"**"; 
-	} 
-}
-void eraseEnemy (int ind){
-	if( enemyFlag[ind] == true ){
-		gotoxy(enemyX[ind], enemyY[ind]); cout<<"  ";  
-		gotoxy(enemyX[ind], enemyY[ind]+1); cout<<"  "; 
-	} 
-}
-void resetEnemy(int ind){
-	eraseEnemy(ind);
-	enemyY[ind] = 1;
-	genEnemy(ind);
-}*/
 
 double distance(axis* a, axis* b)
 {
@@ -84,9 +60,9 @@ double distance(axis* a, axis* b)
 
 robot::robot()
 {
-	this->health = 50;
-	this->power = 5;
-	this->range = 5;
+	this->health = 50;          
+	this->power = 5;            
+	this->range = 5;            
 	this->position.x = 0;
 	this->position.y = 0;
 }
@@ -95,19 +71,19 @@ robot::robot(char k, axis a)
 {
 	if (k == 'r')
 	{
-		this->health = 50;
-		this->power = 5;
-		this->range = 5;
+		this->health = 50;		//Atribut Health robot
+		this->power = 5;		//
+		this->range = 5;		//Jangkauan serangan robot
 	}
 	else
 	{
-		this->health = 15;
-		this->power = 1;
-		this->range = 40;
+		this->health = 15;		//Atribut Health Mecha-Kurama
+		this->power = 1;		//
+		this->range = 40;		//
 	}
 	this->position.x =a.x;
 	this->position.y =a.y;
-}
+} 
 
 void robot::moverobot(axis a)
 {
@@ -116,32 +92,19 @@ void robot::moverobot(axis a)
 
 bool robot::isalive()
 {
-	return (health > 0);
+	return (health > 0);      //Robot 
 }
 
-void gameover(){
-	system("cls");
-	cout<<endl;
-	cout<<"\t\t--------------------------"<<endl;
-	cout<<"\t\t-------- Game Over -------"<<endl;
-	cout<<"\t\t--------------------------"<<endl<<endl;
-	cout<<"\t\tPress any key to go back to menu.";
-	getch();
-}
-void updateHealth(){
-	//gotoxy(7, 5);cout<<"Score: "<<health<<endl;
-}
+
 void instructions(){
-
 	system("cls");
 	cout<<"Instructions";
 	cout<<"\n----------------";
-	cout<<"\n Avoid  by moving left, right. ";
 	cout<<"\n\n Press 'a' to move left";
 	cout<<"\n Press 'd' to move right";
 	cout<<"\n Press 'w' to move up";
 	cout<<"\n Press 's' to move down";
-	cout<<"\n Press 'escape' to exit";
+    cout<<"\n Press 'space' to attack Mecha-Kurama";
 	cout<<"\n\nPress any key to go back to menu";
 	getch();
 }
@@ -149,7 +112,7 @@ void play(){
 	system("cls");
 	char c;
 	robot r;
-	int cnt = 0;
+	int cnt = 0;                    //Jumlah Mecha-Kurama yang berhasil dikalahkan
 	for (int i = 0; i < 20; i++)
 	{
 		printf("|");
@@ -168,8 +131,10 @@ void play(){
 		srand((unsigned) time(0));
 		axis t = make_axis (rand()%20,rand()%20);
 		robot k('k',t);
+		gotoxy(2,24); cout <<"Robot Health : " << r.health;		//Menampilkan atribut health robot
+		gotoxy(2,25); cout <<"Mecha-Kurama Health : " << k.health;	//Menampilkan atribut health Mecha-Kurama
 		gotoxy(t.x,19-t.y);
-		printf(".");
+		printf("*");            //Penanda Mecha-Kurama
 		while (k.isalive())
 		{
 			c = getch();
@@ -177,13 +142,14 @@ void play(){
 			{
 				if (distance(&a,&t) <= r.range)
 				{
-					k.health-=r.power;
+					k.health -= r.power;
 				}
 				else
 				{
 					gotoxy(0,20);
-					printf("out of range");
+					printf("Out of range");         //Mecha-Kurama berada di luar jangkauan senjata
 					gotoxy(a.x,19-a.y);
+					continue;
 				}
 			}
 			else
@@ -193,7 +159,7 @@ void play(){
 			}
 			if (distance(&a,&t) <= k.range)
 			{
-				r.health-=k.power;
+				r.health -= k.power;				/*****Pas aku tes r.health-nya bisa > 50******/
 				if (!r.isalive())
 				{
 					break;
@@ -206,7 +172,7 @@ void play(){
 		}
 	}
 	gotoxy(0,20);
-	printf("Successfully destroy %d mecha kurama\n",cnt);
+	printf("Successfully destroy %d Mecha-Kurama\n",cnt);   //Menampilkan jumlah Mecha-Kurama yang berhasil dikalahkan
 	printf("Press any key to go back to menu");
 	getch();
 }
